@@ -65,4 +65,8 @@ const createInvestment = async (req, res) => {
   }
 };
 
-module.exports = { getAllInvestments, createInvestment, getInvestment };
+module.exports = {
+  getAllInvestments,
+  createInvestment,
+  getInvestment,
+};

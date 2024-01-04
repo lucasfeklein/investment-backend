@@ -3,6 +3,7 @@ const {
   getAllInvestments,
   createInvestment,
   getInvestment,
+  getInvestmentsByUserId,
 } = require("../controllers/investment");
 const router = express.Router();
 
