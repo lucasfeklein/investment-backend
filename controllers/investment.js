@@ -27,7 +27,13 @@ const getInvestment = async (req, res) => {
 
 const createInvestment = async (req, res) => {
   try {
-    const { owner, initialInvestment } = req.body;
+    const { userId, initialInvestment } = req.body;
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      return res.status(400).json({ error: `No user with id:${userId}` });
+    }
 
     if (initialInvestment <= 0) {
       return res
@@ -35,12 +41,21 @@ const createInvestment = async (req, res) => {
         .json({ error: "Investment can't be negative or 0" });
     }
 
-    if (!owner || !initialInvestment) {
+    if (user.balance < initialInvestment) {
+      return res.status(400).json({ error: "Your balance is insufficient" });
+    }
+
+    if (!userId || !initialInvestment) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { balance: user.balance - initialInvestment },
+    });
+
     const investment = await prisma.investment.create({
-      data: { owner, initialInvestment },
+      data: { initialInvestment: initialInvestment, ownerId: userId },
     });
 
     res.status(201).json({ investment });
