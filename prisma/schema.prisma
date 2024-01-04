@@ -16,5 +16,6 @@ model Investment {
   owner             String
   initialInvestment Float
   profit            Float    @default(0)
+  lastUpdateAt      DateTime?
   withdrawn         Boolean  @default(false)
 }
