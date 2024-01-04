@@ -6,6 +6,8 @@ const PORT = process.env.PORT || 3000;
 //import routes
 const investmentRoute = require("./routes/investment");
 
+app.use(express.json());
+
 app.use("/investment", investmentRoute);
 
 app.get("/", async (req, res) => {
