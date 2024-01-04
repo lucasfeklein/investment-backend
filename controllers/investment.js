@@ -14,6 +14,12 @@ const createInvestment = async (req, res) => {
   try {
     const { owner, initialInvestment } = req.body;
 
+    if (initialInvestment <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Investment can't be negative or 0" });
+    }
+
     if (!owner || !initialInvestment) {
       return res.status(400).json({ error: "Missing required fields" });
     }
