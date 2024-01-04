@@ -1,8 +1,8 @@
 const express = require("express");
-const { getInvestments } = require("../controllers/investment");
+const { getAllInvestments } = require("../controllers/investment");
 const router = express.Router();
 
-router.get("/", getInvestments);
+router.get("/", getAllInvestments);
 
 router.post("/", (req, res) => {
   res.send("tcay");

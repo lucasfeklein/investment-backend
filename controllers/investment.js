@@ -1,6 +1,6 @@
 const prisma = require("../prisma");
 
-const getInvestments = async (req, res) => {
+const getAllInvestments = async (req, res) => {
   try {
     const investments = await prisma.investment.findMany();
     res.json({ investments });
@@ -10,4 +10,4 @@ const getInvestments = async (req, res) => {
   }
 };
 
-module.exports = { getInvestments };
+module.exports = { getAllInvestments };

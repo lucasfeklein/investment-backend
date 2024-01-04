@@ -11,8 +11,9 @@ datasource db {
 }
 
 model Investment {
-  id               Int      @id @default(autoincrement())
-  createdAt        DateTime @default(now())
-  owner            String
+  id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now())
+  owner             String
   initialInvestment Float
+  profit            Float    @default(0)
 }
