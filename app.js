@@ -3,8 +3,12 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  console.log(process.env.PORT);
+//import routes
+const investmentRoute = require("./routes/investment");
+
+app.use("/investment", investmentRoute);
+
+app.get("/", async (req, res) => {
   res.send("oi");
 });
 
