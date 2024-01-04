@@ -25,5 +25,6 @@ model Investment {
   initialInvestment Float
   profit            Float    @default(0)
   lastUpdateAt      DateTime?
-  withdrawn         Boolean  @default(false)
+  isWithdrawn       Boolean  @default(false)
+  totalWithdrawn    Float    @default(0)
 }
