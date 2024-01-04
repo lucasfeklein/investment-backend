@@ -16,4 +16,5 @@ model Investment {
   owner             String
   initialInvestment Float
   profit            Float    @default(0)
+  withdrawn         Boolean  @default(false)
 }

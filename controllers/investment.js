@@ -10,6 +10,21 @@ const getAllInvestments = async (req, res) => {
   }
 };
 
+const getInvestment = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const investment = await prisma.investment.findUnique({
+      where: { id: Number(id) },
+    });
+
+    res.status(200).json({ investment });
+  } catch (error) {
+    console.error("Error fetching investments:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 const createInvestment = async (req, res) => {
   try {
     const { owner, initialInvestment } = req.body;
@@ -35,4 +50,4 @@ const createInvestment = async (req, res) => {
   }
 };
 
-module.exports = { getAllInvestments, createInvestment };
+module.exports = { getAllInvestments, createInvestment, getInvestment };
