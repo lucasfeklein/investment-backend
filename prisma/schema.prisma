@@ -10,10 +10,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id          Int @id @default(autoincrement())
+  email       String @unique
+  balance     Float @default(0)
+  Investments Investment[]
+}
+
 model Investment {
   id                Int      @id @default(autoincrement())
+  ownerId           Int
+  owner             User     @relation(fields: [ownerId], references: [id])
   createdAt         DateTime @default(now())
-  owner             String
   initialInvestment Float
   profit            Float    @default(0)
   lastUpdateAt      DateTime?
