@@ -23,7 +23,7 @@ async function updateProfit() {
     // to update profit every month in the same day the money was invested
     if (
       isDate2LaterThanDate1(lastUpdateAt, currentDate) &&
-      currentDate.getDay() === lastUpdateAt.getDay() &&
+      currentDate.getDate() === lastUpdateAt.getDate() &&
       !isWithdrawn
     ) {
       const addGainsToProfit = profit + initialInvestment * 0.0052;
