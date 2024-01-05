@@ -20,7 +20,7 @@ const getInvestment = async (req, res) => {
 
     res.status(200).json({ investment });
   } catch (error) {
-    console.error("Error fetching investments:", error);
+    console.error("Error fetching investment:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -65,7 +65,55 @@ const createInvestment = async (req, res) => {
   }
 };
 
-const withdrawInvestment = async (req, res) => {};
+const withdrawInvestment = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const investment = await prisma.investment.findUnique({
+      where: { id: id },
+    });
+
+    if (!investment) {
+      return res.status(400).json({ error: `No investment with id:${id}` });
+    }
+
+    const { createdAt, profit, initialInvestment } = investment;
+    const currentDate = new Date();
+    const timeDifferenceInYears =
+      (currentDate.getTime() - createdAt.getTime()) /
+      (1000 * 60 * 60 * 24 * 365);
+    let tax = 0;
+
+    if (timeDifferenceInYears < 1) {
+      tax = 0.225 * profit;
+    } else if (timeDifferenceInYears >= 1 && timeDifferenceInYears <= 2) {
+      tax = 0.185 * profit;
+    } else {
+      tax = 0.15 * profit;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: investment.ownerId },
+    });
+
+    const investmentWithdrawn = await prisma.investment.update({
+      where: { id: id },
+      data: { isWithdrawn: true },
+    });
+
+    const gainsAfterTax = investment + profit * (1 * tax);
+
+    const userUpdatedBalance = await prisma.user.update({
+      where: { id: user.id },
+      data: { balance: user.balance + gainsAfterTax },
+    });
+
+    res.status(200).json({ user, investment });
+  } catch (error) {
+    console.error("Error fetching to withdraw investment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   getAllInvestments,
