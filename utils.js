@@ -26,7 +26,7 @@ async function updateProfit() {
       currentDate.getDate() === lastUpdateAt.getDate() &&
       !isWithdrawn
     ) {
-      const addGainsToProfit = profit + initialInvestment * 0.0052;
+      const addGainsToProfit = (profit + initialInvestment) * 0.0052;
       await prisma.investment.update({
         where: { id: id },
         data: { lastUpdateAt: currentDate, profit: profit + addGainsToProfit },
