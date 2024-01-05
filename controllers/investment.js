@@ -65,8 +65,11 @@ const createInvestment = async (req, res) => {
   }
 };
 
+const withdrawInvestment = async (req, res) => {};
+
 module.exports = {
   getAllInvestments,
   createInvestment,
   getInvestment,
+  withdrawInvestment,
 };
