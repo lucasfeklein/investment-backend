@@ -1,11 +1,40 @@
-function isDate2LaterThanDate1(date1, date2) {
-  const formattedDate1 = new Date(date1);
-  const formattedDate2 = new Date(date2);
+const prisma = require("./prisma");
 
-  formattedDate1.setHours(0, 0, 0, 0);
-  formattedDate2.setHours(0, 0, 0, 0);
+function isDate2LaterThanDate1(investmentDate, currentDate) {
+  const formattedInvestmentDate = new Date(investmentDate);
+  const formattedCurrentDate = new Date(currentDate);
 
-  return formattedDate2.getTime() > formattedDate1.getTime();
+  formattedInvestmentDate.setHours(0, 0, 0, 0);
+  formattedCurrentDate.setHours(0, 0, 0, 0);
+
+  return formattedCurrentDate.getTime() > formattedInvestmentDate.getTime();
 }
 
-module.exports = { isDate2LaterThanDate1 };
+async function updateProfit() {
+  const investments = await prisma.investment.findMany();
+  const currentDate = new Date();
+
+  for (const investment of investments) {
+    const { lastUpdateAt, id, profit, initialInvestment, isWithdrawn } =
+      investment;
+
+    // if statement to make sure currentDate is later than the
+    // lastUpdateAt from investment and the day of the currentDate is equal to the day of lastUpdateAt
+    // to update profit every month in the same day the money was invested
+    if (
+      isDate2LaterThanDate1(lastUpdateAt, currentDate) &&
+      currentDate.getDay() === lastUpdateAt.getDay() &&
+      !isWithdrawn
+    ) {
+      const addGainsToProfit = profit + initialInvestment * 0.0052;
+      await prisma.investment.update({
+        where: { id: id },
+        data: { lastUpdateAt: currentDate, profit: addGainsToProfit },
+      });
+    }
+  }
+
+  setTimeout(() => updateProfit(), 24 * 60 * 60 * 1000);
+}
+
+module.exports = { isDate2LaterThanDate1, updateProfit };
