@@ -67,7 +67,7 @@ const createInvestment = async (req, res) => {
 
 const withdrawInvestment = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = Number(req.params.id);
 
     const investment = await prisma.investment.findUnique({
       where: { id: id },
@@ -85,11 +85,11 @@ const withdrawInvestment = async (req, res) => {
     let tax = 0;
 
     if (timeDifferenceInYears < 1) {
-      tax = 0.225 * profit;
+      tax = 0.225;
     } else if (timeDifferenceInYears >= 1 && timeDifferenceInYears <= 2) {
-      tax = 0.185 * profit;
+      tax = 0.185;
     } else {
-      tax = 0.15 * profit;
+      tax = 0.15;
     }
 
     const user = await prisma.user.findUnique({
@@ -101,14 +101,16 @@ const withdrawInvestment = async (req, res) => {
       data: { isWithdrawn: true },
     });
 
-    const gainsAfterTax = investment + profit * (1 * tax);
+    const gainsAfterTax = initialInvestment + profit * (1 - tax);
 
     const userUpdatedBalance = await prisma.user.update({
       where: { id: user.id },
       data: { balance: user.balance + gainsAfterTax },
     });
 
-    res.status(200).json({ user, investment });
+    res
+      .status(200)
+      .json({ user: userUpdatedBalance, investment: investmentWithdrawn });
   } catch (error) {
     console.error("Error fetching to withdraw investment:", error);
     res.status(500).json({ error: "Internal Server Error" });
